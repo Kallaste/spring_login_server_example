@@ -1,6 +1,4 @@
-//Avery's class
-
-package com.packt.cardatabase.service;
+package service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -12,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.packt.cardatabase.domain.User;
 import com.packt.cardatabase.domain.UserRepository;
 
+//@Service("userDetailsService")
 @Service
 public class UserDetailServiceImpl implements UserDetailsService {
   @Autowired
@@ -28,6 +27,3 @@ public class UserDetailServiceImpl implements UserDetailsService {
     }
     
 }
-
-
-
