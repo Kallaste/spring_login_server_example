@@ -33,7 +33,7 @@ public class AuthenticationService {
 	}
 	
 	//Get token from Authorization header (or authentication)
-	public static Authentication getAuthenticationHeader(HttpServletRequest request) {
+	public static Authentication getAuthentication(HttpServletRequest request) {
 		
 		String token = request.getHeader("Authorization");
 		
