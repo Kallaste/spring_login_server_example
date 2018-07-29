@@ -24,34 +24,42 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UserDetailServiceImpl userDetailsService; 
 
-	/*
+	
 	  @Override
 	  protected void configure(HttpSecurity http) throws Exception {
-		 http.csrf().disable().cors().and().authorizeRequests()
-		  .antMatchers(HttpMethod.POST, "/login").permitAll()
-	        .anyRequest().authenticated()
-	        .and()
-	        // Filter for the api/login requests
-	        .addFilterBefore(new LoginFilter("/login", authenticationManager()),
-	                UsernamePasswordAuthenticationFilter.class)
-	        // Filter for other requests to check JWT in header
-	        .addFilterBefore(new AuthenticationFilter(),
-	                UsernamePasswordAuthenticationFilter.class);
+		  
+		  //Disable authentication and cors for POST requests to the /login endpoint
+		  http.csrf().disable().cors().and().authorizeRequests().antMatchers(HttpMethod.POST, "/login").permitAll()
+	      
+		  //For other endpoints, any request must be authenticated or else we should return a 401 response
+		  .anyRequest().authenticated().and()
+	        
+	      // Filter for the /login requests: send these to our LoginFilter
+	      .addFilterBefore(new LoginFilter("/login", authenticationManager()), UsernamePasswordAuthenticationFilter.class)
+	        
+	      // Filter for other requests to check JWT: send these to our AuthenticationFilter
+	      .addFilterBefore(new AuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 	  }
   
+	  
 	  @Bean
 	  CorsConfigurationSource corsConfigurationSource() {
-	      UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-	      CorsConfiguration config = new CorsConfiguration();
-			config.setAllowedOrigins(Arrays.asList("*"));
-			config.setAllowedMethods(Arrays.asList("*"));
-			config.setAllowedHeaders(Arrays.asList("*"));
-			config.setAllowCredentials(true);
-	      config.applyPermitDefaultValues();
+		  
+		  //Allows us to register path patterns for a CorsConfiguration object (below)
+		  UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	    
+		  //A container for cors configuration, and supporting methods
+		  CorsConfiguration config = new CorsConfiguration();
+		
+		  config.setAllowedOrigins(Arrays.asList("*"));
+		  config.setAllowedMethods(Arrays.asList("*"));
+		  config.setAllowedHeaders(Arrays.asList("*"));
+		  config.setAllowCredentials(true);				//"true" means user credentials are supported (default is false)
+		  config.applyPermitDefaultValues();			//By default, a CorsConfiguration does not allow any cross-origin requests. This method flips the initialization model to allow everything. 
 	      
 	      source.registerCorsConfiguration("/**", config);
 	      return source;
-	}	*/
+	}	
 	
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
