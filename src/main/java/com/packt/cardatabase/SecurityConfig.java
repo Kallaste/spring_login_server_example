@@ -21,25 +21,25 @@ import com.packt.cardatabase.service.UserDetailServiceImpl;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+	
 	@Autowired
 	private UserDetailServiceImpl userDetailsService; 
-
 	
-	  @Override
-	  protected void configure(HttpSecurity http) throws Exception {
-		  
-		  //Disable authentication and cors for POST requests to the /login endpoint
-		  http.csrf().disable().cors().and().authorizeRequests().antMatchers(HttpMethod.POST, "/login").permitAll()
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		
+		//Disable authentication and cors for POST requests to the /login endpoint
+		http.csrf().disable().cors().and().authorizeRequests().antMatchers(HttpMethod.POST, "/login").permitAll()
 	      
-		  //For other endpoints, any request must be authenticated or else we should return a 401 response
-		  .anyRequest().authenticated().and()
+		//For other endpoints, any request must be authenticated or else we should return a 401 response
+		.anyRequest().authenticated().and()
+	      
+	    // Filter for the /login requests: send these to our LoginFilter
+	    .addFilterBefore(new LoginFilter("/login", authenticationManager()), UsernamePasswordAuthenticationFilter.class)
 	        
-	      // Filter for the /login requests: send these to our LoginFilter
-	      .addFilterBefore(new LoginFilter("/login", authenticationManager()), UsernamePasswordAuthenticationFilter.class)
-	        
-	      // Filter for other requests to check JWT: send these to our AuthenticationFilter
-	      .addFilterBefore(new AuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-	  }
+	    // Filter for other requests to check JWT: send these to our AuthenticationFilter
+	    .addFilterBefore(new AuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+	}
   
 	  
 	  @Bean
