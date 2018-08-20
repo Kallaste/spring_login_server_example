@@ -40,6 +40,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	    // Filter for other requests to check JWT: send these to our AuthenticationFilter
 	    .addFilterBefore(new AuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
+
+	
+	  protected void configure2(HttpSecurity http) throws Exception {
+		  
+		  //Disable authentication and cors for POST requests to the /login endpoint
+		  http.csrf().disable().cors().and().authorizeRequests().antMatchers(HttpMethod.POST, "/login").permitAll()
+	      
+		  //For other endpoints, any request must be authenticated or else we should return a 401 response
+		  .anyRequest().authenticated().and()
+	        
+	      // Filter for the /login requests: send these to our LoginFilter
+	      .addFilterBefore(new LoginFilter("/login", authenticationManager()), UsernamePasswordAuthenticationFilter.class)
+	        
+	      // Filter for other requests to check JWT: send these to our AuthenticationFilter
+	      .addFilterBefore(new AuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+	  }
   
 	  
 	  @Bean
